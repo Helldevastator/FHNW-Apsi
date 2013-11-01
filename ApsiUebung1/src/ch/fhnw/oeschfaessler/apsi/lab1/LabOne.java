@@ -18,9 +18,11 @@ public class LabOne {
 
 	private int collisionsFound = 0;
 	private int nCollisions;
+	private int lastCombination = -1;
 	private String templateOriginal;
 	private String templateFake;
 	private boolean useRandom = false;
+	private final Random rand = new Random();
 	
 	private HashMap<Integer, Integer> hashesOriginal = new HashMap<>();
 	private HashMap<Integer, Integer> hashesFake = new HashMap<>();
@@ -106,8 +108,7 @@ public class LabOne {
 	}
 	
 	private void generateHashes(int count) {
-		int fakeCombination = -1, originalCombination = -1;
-		Random rand = new Random();
+		int fakeCombination = lastCombination, originalCombination = lastCombination;
 		int hash;
 		for (int i = 0; i < count; i++) {
 			if (useRandom) {
