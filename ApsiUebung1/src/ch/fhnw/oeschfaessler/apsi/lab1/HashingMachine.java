@@ -40,11 +40,19 @@ public class HashingMachine {
 		BlockCipher engine = new DESEngine();
 		BufferedBlockCipher cipher = new PaddedBlockCipher(engine);
 		
+		byte[] desOut;
 		byte[] tempState = new byte[8];
 		byte[] hash = iv.clone();
 
 		for (int i = 0; i < input.length; i += 8) {
-			process(input, cipher, tempState, hash, i);
+			try {
+				desOut = new byte[16];
+				cipher.init(true, new KeyParameter(hash));
+				cipher.processBytes(input, i, 8, desOut, 0);
+				cipher.doFinal(desOut, 0);
+				for (int j = 0; j < hash.length; j++)
+					hash[j] = (byte) ((desOut[j] ^ desOut[j + 8]) ^ hash[j]);
+			} catch (CryptoException ce) { System.err.println(ce); }
 
 			// swap
 			byte[] tmp = tempState;
@@ -59,14 +67,6 @@ public class HashingMachine {
 	}
 
 	private static void process(byte[] input, BufferedBlockCipher cipher, byte[] hash, byte[] previousHash, int index) {
-		try {
-			byte[] desOut = new byte[cipher.getOutputSize(8)];
-	
-			cipher.init(true, new KeyParameter(previousHash));
-			cipher.processBytes(input, index, 8, desOut, 0);
-			cipher.doFinal(desOut, 0);
-			for (int j = 0; j < hash.length; j++)
-				hash[j] = (byte) ((desOut[j] ^ desOut[j + 8]) ^ previousHash[j]);
-		} catch (CryptoException ce) { System.err.println(ce); }
+		
 	}
 }

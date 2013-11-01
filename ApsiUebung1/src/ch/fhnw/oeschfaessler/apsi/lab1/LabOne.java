@@ -19,6 +19,7 @@ public class LabOne {
 	private int nCollisions;
 	private String templateOriginal = null;
 	private String templateFake = null;
+	
 	private HashMap<Integer, Integer> hashesOriginal = new HashMap<>();
 	private HashMap<Integer, Integer> hashesFake = new HashMap<>();
 	private HashMap<Integer, ArrayList<String>> map = new HashMap<>();
@@ -152,7 +153,7 @@ public class LabOne {
 	private void fillMap() throws FileNotFoundException {
 		Scanner in = new Scanner(new File("options.ini"));
 		int index = 0;
-		while (in.hasNext()) {
+		while (in.hasNextLine()) {
 			ArrayList<String> arrayList = new ArrayList<>();
 			String line = in.nextLine();
 			arrayList.add(line.substring(1, line.indexOf('"', 1)));
