@@ -1,0 +1,8 @@
+{#0} Alice
+
+Ich bedanke mich {#1} für {#2} {#3} {#4}.
+Ich möchte {#5} {#6} darauf aufmerksam machen, dass {#7} etwas {#8} in den {#9} {#10}: SunShienForever! Du kannst Dir {#11} {#12} was {#13} steckt! Du wirst die {#14} sein, eine {#15} {#16} {#17} {#18} zu {#19}.
+Ich bitte Dich {#20} von 100000 {#21} auf das Konto {#22} Nr. 222-1101.461.12 {#23} Bank ABC AG, {#24} Basel {#25} zu überweisen.
+Ich {#26} Dir {#27} zu haben und {#28} mit {#29} Grüssen.
+
+{#30} Bobi {#31} CDE AG 
