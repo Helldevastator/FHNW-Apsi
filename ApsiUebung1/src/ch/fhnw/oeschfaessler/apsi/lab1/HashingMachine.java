@@ -51,7 +51,7 @@ public class HashingMachine {
 				cipher.processBytes(input, i, 8, desOut, 0);
 				cipher.doFinal(desOut, 0);
 				for (int j = 0; j < hash.length; j++)
-					hash[j] = (byte) ((desOut[j] ^ desOut[j + 8]) ^ hash[j]);
+					tempState[j] = (byte) ((desOut[j] ^ desOut[j + 8]) ^ hash[j]);
 			} catch (CryptoException ce) { System.err.println(ce); }
 
 			// swap
