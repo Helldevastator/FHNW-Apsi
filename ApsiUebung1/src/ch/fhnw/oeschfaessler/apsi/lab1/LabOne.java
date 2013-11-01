@@ -19,6 +19,7 @@ public class LabOne {
 	private int collisionsFound = 0;
 	private int nCollisions;
 	private int lastCombination = -1;
+	private int blockSize = 1024;
 	private String templateOriginal;
 	private String templateFake;
 	private boolean useRandom = false;
@@ -28,10 +29,11 @@ public class LabOne {
 	private HashMap<Integer, Integer> hashesFake = new HashMap<>();
 	private HashMap<Integer, ArrayList<String>> map = new HashMap<>();
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) {
 		LabOne app = new LabOne();
 		app.setOptions("options.ini");
 		app.setRandomUsage(true);
+		app.setBlockSize(1024);
 		app.setExpectedCollisionCount(3);
 		app.setOriginalTemplate("templateOriginal.txt");
 		app.setFakeTemplate("templateFake.txt");
@@ -59,6 +61,10 @@ public class LabOne {
 		nCollisions = count;
 	}
 	
+	public void setBlockSize(int size) {
+		blockSize = size;
+	}
+	
 	public void setRandomUsage(boolean bool) {
 		useRandom = bool;
 	}
@@ -84,33 +90,19 @@ public class LabOne {
 		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 
-	private int createVariation(int combination, String template) {
-		String text = resolveCombination(combination, template);
-		return HashingMachine.createHash(text.getBytes());
-	}
-	
-	private String resolveCombination(int combination, String template) {
-		String text = new String(template);
-		for (int i = 0; i < 32; i++) {
-			text = text.replace("{#" + Integer.toString(i) + "}", map.get(i).get(combination & 1));
-			combination >>>= 1;
-		}
-		return text;
-	}
-
 	public void createAllVariation() {
 		collisionsFound = 0;
 		while (collisionsFound != nCollisions) {
-			generateHashes(1024);
+			generateHashes();
 			System.out.println("the cake is a lie");
 			checkCollisions();
 		}
 	}
 	
-	private void generateHashes(int count) {
+	private void generateHashes() {
 		int fakeCombination = lastCombination, originalCombination = lastCombination;
 		int hash;
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < blockSize; i++) {
 			if (useRandom) {
 				do { originalCombination = rand.nextInt(); } while (hashesOriginal.containsValue(originalCombination));
 				do { fakeCombination     = rand.nextInt(); } while (hashesFake.containsValue(fakeCombination));
@@ -155,6 +147,19 @@ public class LabOne {
 		int hash2 = createVariation(fakeComb, templateFake);
 		System.out.println("Success? "+ (hash == hash2 ? "YES" : "NO"));
 	}
-
+	
+	private int createVariation(int combination, String template) {
+		String text = resolveCombination(combination, template);
+		return HashingMachine.createHash(text.getBytes());
+	}
+	
+	private String resolveCombination(int combination, String template) {
+		String text = new String(template);
+		for (int i = 0; i < 32; i++) {
+			text = text.replace("{#" + Integer.toString(i) + "}", map.get(i).get(combination & 1));
+			combination >>>= 1;
+		}
+		return text;
+	}
 
 }
