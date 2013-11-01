@@ -65,8 +65,4 @@ public class HashingMachine {
 		long result = buffer.getLong();
 		return (int) (result >>> 32) ^ Integer.reverse((int) result);
 	}
-
-	private static void process(byte[] input, BufferedBlockCipher cipher, byte[] hash, byte[] previousHash, int index) {
-		
-	}
 }

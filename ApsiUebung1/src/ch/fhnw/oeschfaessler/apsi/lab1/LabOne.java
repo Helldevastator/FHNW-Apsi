@@ -16,9 +16,11 @@ import java.util.Scanner;
 
 public class LabOne {
 
+	private int collisionsFound = 0;
 	private int nCollisions;
-	private String templateOriginal = null;
-	private String templateFake = null;
+	private String templateOriginal;
+	private String templateFake;
+	private boolean useRandom = false;
 	
 	private HashMap<Integer, Integer> hashesOriginal = new HashMap<>();
 	private HashMap<Integer, Integer> hashesFake = new HashMap<>();
@@ -26,27 +28,44 @@ public class LabOne {
 
 	public static void main(String[] args) throws FileNotFoundException {
 		LabOne app = new LabOne();
+		app.setOptions("options.ini");
+		app.setRandomUsage(true);
 		app.setExpectedCollisionCount(3);
 		app.setOriginalTemplate("templateOriginal.txt");
 		app.setFakeTemplate("templateFake.txt");
 		app.createAllVariation();
 	}
-
-	public LabOne() throws FileNotFoundException {
-		fillMap();
+	
+	public boolean setOptions(String filename) {
+		boolean done = true;
+		try {
+			Scanner in = new Scanner(new File(filename));
+			int index = 0;
+			while (in.hasNextLine()) {
+				ArrayList<String> arrayList = new ArrayList<>();
+				String line = in.nextLine();
+				arrayList.add(line.substring(1, line.indexOf('"', 1)));
+				arrayList.add(line.substring(line.indexOf('"', 1) + 3, line.length() - 1));
+				map.put(index++, arrayList);
+			}
+			in.close();
+		} catch (FileNotFoundException e) { done = false; }
+		return done;
 	}
 
 	public void setExpectedCollisionCount(int count) {
 		nCollisions = count;
+	}
+	
+	public void setRandomUsage(boolean bool) {
+		useRandom = bool;
 	}
 
 	public boolean setOriginalTemplate(String filename) {
 		boolean done = true;
 		try {
 			templateOriginal = readFile(filename, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			done = false;
-		}
+		} catch (IOException e) { done = false; }
 		return done;
 	}
 
@@ -54,9 +73,7 @@ public class LabOne {
 		boolean done = true;
 		try {
 			templateFake = readFile(filename, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			done = false;
-		}
+		} catch (IOException e) { done = false; }
 		return done;
 	}
 
@@ -65,101 +82,78 @@ public class LabOne {
 		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 
-	private int createVariation(int combination, String file) {
-
-		String tmpfile = new String(file);
+	private int createVariation(int combination, String template) {
+		String text = resolveCombination(combination, template);
+		return HashingMachine.createHash(text.getBytes());
+	}
+	
+	private String resolveCombination(int combination, String template) {
+		String text = new String(template);
 		for (int i = 0; i < 32; i++) {
-			tmpfile = tmpfile.replace("{#" + Integer.toString(i) + "}", map
-					.get(i).get(combination & 1));
+			text = text.replace("{#" + Integer.toString(i) + "}", map.get(i).get(combination & 1));
 			combination >>>= 1;
 		}
-
-		return HashingMachine.createHash(tmpfile.getBytes());
+		return text;
 	}
 
 	public void createAllVariation() {
-		int fakeCombination = 0;
-		int originalCombination = 0;
-		int collisionHash = 0;
-
-		int combination = 0;
-
-		int collisionsFound = 0;
-		boolean useRandom = true;
-		Random rand = new Random();
-
+		collisionsFound = 0;
 		while (collisionsFound != nCollisions) {
-			for (int i = 0; i < 1024; i++) {
-				int hash;
-
-				if (useRandom) {
-					// random combination
-					do {
-						combination = rand.nextInt();
-					} while (this.hashesOriginal.containsValue(combination));
-
-					hash = createVariation(combination, templateOriginal);
-					this.hashesOriginal.put(hash, combination);
-
-					// random combination
-					do {
-						combination = rand.nextInt();
-					} while (this.hashesFake.containsValue(combination));
-					hash = createVariation(combination, templateFake);
-					this.hashesFake.put(hash, combination);
-
-				} else {
-					hash = createVariation(combination, templateOriginal);
-					this.hashesOriginal.put(hash, combination);
-
-					hash = createVariation(combination, templateFake);
-					this.hashesFake.put(hash, combination);
-
-					combination++;
-				}
-			}
-
+			generateHashes(1024);
 			System.out.println("the cake is a lie");
-
-			// check if there are collisions
-			Iterator<Integer> it = hashesOriginal.keySet().iterator();
-			while (it.hasNext()) {
-				Integer hash = it.next();
-				// collision found
-				if (this.hashesFake.containsKey(hash)) {
-					collisionsFound++;
-					collisionHash = hash;
-					fakeCombination = hashesFake.get(hash);
-					originalCombination = hashesOriginal.get(hash);
-					System.out.println("collision hash: " + collisionHash);
-					System.out.println("original combination: "
-							+ originalCombination);
-					System.out.println("fake combination: " + fakeCombination);
-					checkSuccess(originalCombination, fakeCombination);
-					System.out.println("-----------------------------------");
-				}
+			checkCollisions();
+		}
+	}
+	
+	private void generateHashes(int count) {
+		int fakeCombination = -1, originalCombination = -1;
+		Random rand = new Random();
+		int hash;
+		for (int i = 0; i < count; i++) {
+			if (useRandom) {
+				do { originalCombination = rand.nextInt(); } while (hashesOriginal.containsValue(originalCombination));
+				do { fakeCombination     = rand.nextInt(); } while (hashesFake.containsValue(fakeCombination));
+			} else {
+				originalCombination++;
+				fakeCombination++;
+			}
+			hash = createVariation(originalCombination, templateOriginal);
+			hashesOriginal.put(hash, originalCombination);
+			hash = createVariation(fakeCombination, templateFake);
+			hashesFake.put(hash, fakeCombination);
+		}
+	}
+	
+	private void checkCollisions() {
+		int fakeCombination, originalCombination, hash;
+		Iterator<Integer> it = hashesOriginal.keySet().iterator();
+		while (it.hasNext()) {
+			hash = it.next();
+			if (this.hashesFake.containsKey(hash)) {
+				collisionsFound++;
+				
+				fakeCombination     = hashesFake.get(hash);
+				originalCombination = hashesOriginal.get(hash);
+				System.out.println("-----------------------------------");
+				System.out.println("collision hash: " + hash);
+				System.out.println("-----------------------------------");
+				System.out.println("Original Text: ");
+				System.out.println(resolveCombination(originalCombination, templateOriginal));
+				System.out.println("-----------------------------------");
+				System.out.println("Fake Text: ");
+				System.out.println(resolveCombination(fakeCombination, templateFake));
+				System.out.println("-----------------------------------");
+				checkSuccess(originalCombination, fakeCombination);
+				System.out.println("-----------------------------------");
 			}
 		}
-
 	}
 
 	private void checkSuccess(int originalComb, int fakeComb) {
 		int hash = createVariation(originalComb, templateOriginal);
 		int hash2 = createVariation(fakeComb, templateFake);
-		System.out.print("Success? ");
-		System.out.println(hash == hash2 ? "YES" : "NO");
+		System.out.println("Success? "+ (hash == hash2 ? "YES" : "NO"));
 	}
 
-	private void fillMap() throws FileNotFoundException {
-		Scanner in = new Scanner(new File("options.ini"));
-		int index = 0;
-		while (in.hasNextLine()) {
-			ArrayList<String> arrayList = new ArrayList<>();
-			String line = in.nextLine();
-			arrayList.add(line.substring(1, line.indexOf('"', 1)));
-			arrayList.add(line.substring(line.indexOf('"', 1) + 3,
-					line.length() - 1));
-			map.put(index++, arrayList);
-		}
-	}
+
 }
