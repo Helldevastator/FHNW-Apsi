@@ -1,1 +1,9 @@
 *.class
+
+*.aux
+
+*.log
+
+ApsiUebung1/doc/Bericht1_faessler_oesch.synctex.gz
+
+*.toc
