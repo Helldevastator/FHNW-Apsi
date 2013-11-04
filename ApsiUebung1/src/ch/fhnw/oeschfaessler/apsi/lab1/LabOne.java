@@ -27,16 +27,22 @@ public class LabOne {
 	
 	private HashMap<Integer, Integer> hashesOriginal = new HashMap<>();
 	private HashMap<Integer, Integer> hashesFake = new HashMap<>();
+	private ArrayList<Integer> collisions = new ArrayList<>();
 	private HashMap<Integer, ArrayList<String>> map = new HashMap<>();
 
 	public static void main(String[] args) {
 		LabOne app = new LabOne();
-		app.setOptions("options.ini");
-		app.setRandomUsage(true);
-		app.setBlockSize(1024);
-		app.setExpectedCollisionCount(3);
+		
 		app.setOriginalTemplate("templateOriginal.txt");
 		app.setFakeTemplate("templateFake.txt");
+		app.setOptions("options.ini");
+		
+		app.setRandomUsage(true);
+		
+		app.setBlockSize(1000);
+		
+		app.setExpectedCollisionCount(1);
+		
 		app.createAllVariation();
 	}
 	
@@ -122,20 +128,18 @@ public class LabOne {
 		Iterator<Integer> it = hashesOriginal.keySet().iterator();
 		while (it.hasNext()) {
 			hash = it.next();
-			if (this.hashesFake.containsKey(hash)) {
+			if (hashesFake.containsKey(hash) && !collisions.contains(hash)) {
 				collisionsFound++;
-				
+				collisions.add(hash);
 				fakeCombination     = hashesFake.get(hash);
 				originalCombination = hashesOriginal.get(hash);
 				System.out.println("-----------------------------------");
-				System.out.println("collision hash: " + hash);
-				System.out.println("-----------------------------------");
+				System.out.println(collisions.size() + "# collision hash: " + hash);
+				System.out.println("hash count: "+hashesFake.size());
 				System.out.println("Original Text: ");
 				System.out.println(resolveCombination(originalCombination, templateOriginal));
-				System.out.println("-----------------------------------");
 				System.out.println("Fake Text: ");
 				System.out.println(resolveCombination(fakeCombination, templateFake));
-				System.out.println("-----------------------------------");
 				checkSuccess(originalCombination, fakeCombination);
 				System.out.println("-----------------------------------");
 			}

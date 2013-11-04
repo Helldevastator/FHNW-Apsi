@@ -12,7 +12,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 
 public class HashingMachine {
 	
-	private final static byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	private final static byte[] iv = { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 };
 
 	public static int createHash(byte[] input) {
 		input = preprocess(input);
