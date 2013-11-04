@@ -75,6 +75,7 @@
 \pagestyle{firststyle} %different look of first page
  
 \title{Warum der Wert von $n$ in $2^n$ wichtig ist}
+\author{Fabio Oesch \& Jan Fässler}
 
  \begin{document}
  \maketitle
@@ -82,7 +83,7 @@
  \pagestyle{firststyle}
  \begin{abstract}
  \begin{center}
-  Fabio Oesch \& Jan Fässler
+ Es wird beschrieben, wie man 2 Briefe mit dem selben Hashwert erstellt. Diese haben eine unterschiedliche Kontonummer.
  \end{center}
  \vspace{0.5cm}
 \hrulefill
@@ -100,12 +101,12 @@ Diese Klasse hasht den Vorgegebenen Text mit der Hashfunktion die wir von der Au
 \subsubsection{preprocess}
 Die Methode preprocess(byte[] input) strukturiert den Input wie er nachher benötigt wird.
 \lstinputlisting[label=Structure the input,caption=Structure the input]{inputstructure.java}
-Die erste Linie kopiert den input in den Ouput. Linien 2 und 3 sind für das Padding verantwortlich. Die Linie 4 kopiert die Länge in den Output.
+Die erste Linie kopiert den Input in den Ouput. Linien 2 und 3 sind für das Padding verantwortlich. Der erste Teil des Paddings fügt $10\dots0$ hinzu und der zweite füllt den Rest mit Nullen auf. Die Linie 4 kopiert die Länge in den Output.
 \subsubsection{create}
 \lstinputlisting[label=Hashing,caption=Hashing]{create.java}
-Auf der Zeile .. wird der cipher mit dem Initialvektor initialisiert.\\
-Xor Magic von altem und neuem Zeugs\\
-Da dies ein Blockcipher ist wird nun ein neuer hash benutzt mit der der Text verschlüsselt wird.\\
+Auf der Zeile 2 wird der cipher mit dem Initialvektor initialisiert.\\
+Zwischen Zeile 4 - 18 wird der Blockcipher ausgeführt. Das heisst es wird der alte Output genommen und ein neuer Hashwert erzeugt. Da desOut, die Ausgabe von der Hashfunktion, doppelt so gross ist, müssen wir diesen noch verkleinern. Dies machen wir mit $desOut[j] \oplus desOut[j + 8]$.\\
+Ab Zeile 20 - 23 wird noch $H$, unser Output, in die Hälften $H_1$ und $H_2$ geteilt. Wobei $H_2$ in der umgekehrten Reihenfolge mit $H_1$ XOR'd. Dies ist nun der Output $h(m)$.
 \subsection{LabOne}
 Main Klasse in der, die Hashfunktion geknackt wird.
 \subsubsection{main}
