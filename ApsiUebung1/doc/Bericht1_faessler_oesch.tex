@@ -108,17 +108,25 @@ Auf der Zeile 2 wird der cipher mit dem Initialvektor initialisiert.\\
 Zwischen Zeile 4 - 18 wird der Blockcipher ausgeführt. Das heisst es wird der alte Output genommen und ein neuer Hashwert erzeugt. Da desOut, die Ausgabe von der Hashfunktion, doppelt so gross ist, müssen wir diesen noch verkleinern. Dies machen wir mit $desOut[j] \oplus desOut[j + 8]$.\\
 Ab Zeile 20 - 23 wird noch $H$, unser Output, in die Hälften $H_1$ und $H_2$ geteilt. Wobei $H_2$ in der umgekehrten Reihenfolge mit $H_1$ XOR'd. Dies ist nun der Output $h(m)$.
 \subsection{LabOne}
-Main Klasse in der, die Hashfunktion geknackt wird.
+In der Klasse LabOne wird die ganze Arbeit gemacht. Es werden zwei Template Dateien eingelesen und eine Datei mit den Optionen welche die Möglichkeiten für die Lücken in den Template Dateien zur Verfügung stellt.
+
 \subsubsection{main}
-In dieser Klasse können wir Einstellungen für unsere Hashfunktion vornehmen.
+In der main Funktion werden alle Einstellungen konfiguriert und das Suchen gestartet.
+
 \subsubsection{resolveCombination}
-Je nachdem wie der Integer ist von combination wird ein String generiert, mit dem Template, für die er die verschiedenen Optionen von options.ini einsetzt.
+Diese Funktion bekommt einen Integer und ein Template String. Sie schaut den Integer Bit-weise an und nimmt je nach dem ob das LSBit eine 1 oder eine 0 ist die eine oder andere Option und setzt sie zu einem neuen String zusammen. Dieser wird dan zurückgegeben.
+
 \subsubsection{createVariation}
-Macht das selbe wie resolveCombination jedoch wird stattdessen der Hashwert als Integer zurückgegeben.
+Diese Funktion bekommt auch einen Integer und einen Template String. Diese werden danach direkt an die resolveCombination Funktion übergeben. Der neue Text der von dieser zurückgegeben wird, wird dan mittels der HashingMachine in einen Hash verwandelt.
+
 \subsubsection{generateHashes}
+Diese Funktion erstellt entweder zufällig oder der Reihe nach einen Block von Combinationen von den Orginal- und Fake Texten und speichert ihre Hash Werte ab.
 \lstinputlisting[label=Hashing Knacken,caption=Hashing Knacken]{hashtest.java}
-Methode welche überprüft, ob man den gleichen Hashwert erhalten hat. Man überprüft, ob man die generierten fakeCombination's eine Kollision mit den dem erstellten orginalCombination hat.
 
+\subsubsection{checkCollisions}
+Methode welche überprüft ob es in der Liste der Hash Werte von den Fake-Texte eine Kollision haben mit den Hash Werte aus den Orginal Texten. Falls einer gefunden wird, wirt ein Zähler hochgezählt und die gefundene Kollision abgelegt.
 
+\subsubsection{createAllVariation}
+Diese Funktion erstellt immer wieder einen neuen Block von Hash Werte und überprüft danach ob es in den erzeugten Hashs Kollisionen gibt.
  
  \end{document}
