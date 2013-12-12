@@ -16,9 +16,9 @@ import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
 public class Controller {
 	
 	private static String REGISTER = "rattle_bits/register.jsp";
-	private static String SUCCESS = "rattle_bits/success.jsp";
-	private static String LOGIN = "rattle_bits/login.jsp";
-	private static String INDEX = "rattle_bits/index.jsp";
+	private static String SUCCESS  = "rattle_bits/success.jsp";
+	private static String LOGIN    = "rattle_bits/login.jsp";
+	private static String INDEX    = "rattle_bits/index.jsp";
 	private static String OVERVIEW = "rattle_bits/overview.jsp";
 	
 	private final Connection con;
