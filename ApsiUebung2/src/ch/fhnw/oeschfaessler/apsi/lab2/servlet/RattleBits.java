@@ -18,48 +18,57 @@ import ch.fhnw.oeschfaessler.apsi.lab2.Controller;
 @WebServlet("/RattleBits")
 public class RattleBits extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
 
 	private final Controller controller;
-       
-    /**
-     * @throws SQLException 
-     * @see HttpServlet#HttpServlet()
-     */
-    public RattleBits() throws SQLException {
-        super();
-        controller = new Controller(DriverManager.getConnection("jdbc:mysql://localhost/apsi_lab?user=root"));
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	public RattleBits() throws SQLException, ClassNotFoundException {
+		super();
+		Class.forName("com.mysql.jdbc.Driver");
+		controller = new Controller(
+				DriverManager
+						.getConnection("jdbc:mysql://localhost/apsi_lab?user=root"));
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 		String page = request.getParameter("page");
 		if ("login".equals(page)) {
 			controller.loginPage(request, response);
-		} else if("register".equals(page)) {
+		} else if ("register".equals(page)) {
 			controller.regsiterPage(request, response);
-		} else if("activate".equals(page)) {
+		} else if ("activate".equals(page)) {
 			controller.activatePage(request, response);
 		} else {
 			controller.indexPage(request, response);
 		}
-		
+
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	@Override
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 		if (request.getParameter("register") != null) {
 			controller.regsiterPage(request, response);
 		} else if (request.getParameter("login") != null) {
 			controller.loginPage(request, response);
 		}
-		
+
 	}
 
 }
