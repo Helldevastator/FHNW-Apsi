@@ -40,7 +40,7 @@ public class Controller {
 		Company c = new Company(con);
 		boolean activate = false;
 		try {
-			activate = c.activate();
+			activate = c.activate(request.getParameter("acode"));
 		} catch (SQLException e) {
 			messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
 		}
@@ -93,7 +93,7 @@ public class Controller {
 		Company c = new Company(con);
 		boolean login = false;
 		try {
-			login = c.checkLogin();
+			login = c.checkLogin(request.getParameter("user"), request.getParameter("password"));
 		} catch (SQLException e) {
 			messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
 		}

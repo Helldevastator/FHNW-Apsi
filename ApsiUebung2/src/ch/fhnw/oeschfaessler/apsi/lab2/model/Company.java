@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +42,7 @@ public class Company {
 		return password;
 	}
 	public final void setPassword(String password, boolean hash) {
-		try {
-			this.password = hash ? String.valueOf(MessageDigest.getInstance("SHA-256").digest(password.getBytes())) : password;
-		} catch (NoSuchAlgorithmException e) { this.password = password; }
+		this.password = hash ? hash(password) : password;
 	}
 	public final String getName() {
 		return name;
@@ -83,14 +82,28 @@ public class Company {
 		this.activation = activation;
 	}
 	
-	public boolean checkLogin() throws SQLException {
-		// TODO: implement check login
-		return false;
+	public boolean checkLogin(String user, String password) throws SQLException {
+		PreparedStatement stm = con.prepareStatement("SELECT `id`, `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? AND activation IS NULL");
+		stm.setString(1, user);
+		stm.setString(2, hash(password));
+		ResultSet rs = stm.executeQuery();
+		if (rs.next()) {
+			id = rs.getInt(1);
+			username = rs.getString(2);
+			name = rs.getString(3);
+			address = rs.getString(4);
+			zip = rs.getInt(5);
+			town = rs.getString(6);
+			mail = rs.getString(7);
+			return true;
+		}
+		else return false;
 	}
 	
-	public boolean activate() throws SQLException {
-		// TODO: implement activate
-		return false;
+	public boolean activate(String activationCode) throws SQLException {
+		PreparedStatement stm = con.prepareStatement("UPDATE company SET activation = NULL WHERE activation = ?");
+		stm.setString(1, activationCode);
+		return stm.executeUpdate() == 1 ? true : false;
 	}
 
 	public List<String> validate() {
@@ -169,7 +182,6 @@ public class Company {
 		stm.setString(7, mail);
 		stm.setString(8, activation);
 		stm.execute();
-		con.close();
 		return this;
 	}
 	
@@ -250,5 +262,15 @@ public class Company {
 		if (zip != other.zip)
 			return false;
 		return true;
+	}
+	
+	private static String hash(String s) {
+		byte[] data = null;
+		try {
+			data = MessageDigest.getInstance("SHA-256").digest(s.getBytes());
+		} catch (NoSuchAlgorithmException e) {
+			data = s.getBytes();
+		}
+		return new String(data);
 	}
 }
