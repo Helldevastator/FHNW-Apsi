@@ -174,7 +174,6 @@ public class Company {
 	 * @throws SQLException thrown on database errors
 	 * @throws MailSendErrorException thrown if the login data could not be sent
 	 */
-	@Nonnull
 	public final void save() throws SQLException, MailSendErrorException {
 		String username = createUsername();
 		String password = UUID.randomUUID().toString();
@@ -221,14 +220,13 @@ public class Company {
 			return stm.getUpdateCount() > 0;
 		} 
 	}
-	
-
 
 	/**
 	 * Creates a new Username 
 	 * @return new username
 	 * @throws SQLException thrown on database error
 	 */
+	@Nonnull
 	@CheckReturnValue
 	private final String createUsername() throws SQLException {
 		String usernameBase = name != null ? name.replace(" ", "") : "user";
