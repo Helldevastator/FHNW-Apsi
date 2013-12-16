@@ -2,6 +2,7 @@ package ch.fhnw.oeschfaessler.apsi.lab2;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sun.istack.internal.NotNull;
+
 import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
+import ch.fhnw.oeschfaessler.apsi.lab2.model.DbConnection;
 
 public class Controller {
 	
@@ -21,47 +25,89 @@ public class Controller {
 	private static String INDEX    = "rattle_bits/index.jsp";
 	private static String OVERVIEW = "rattle_bits/overview.jsp";
 	
-	private final Connection con;
 	
-	public Controller(Connection connection) {
-		con = connection;
-	}
-	
-	public void indexPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	/**
+     * Displays the index page of the website.
+     * @param request request for the website
+     * @param response response sent to the website
+     * @throws ServletException thrown by RequestDispatcher
+     * @throws IOException thrown by RequestDispatcher
+     */
+	public void indexPage(@NotNull HttpServletRequest request,@NotNull HttpServletResponse response) throws ServletException, IOException {
 		request.getRequestDispatcher(INDEX).forward(request, response);
 	}
 	
-	public void overviewPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO: overview / passwort change page
+	/**
+     * Displays the overview page of the website.
+     * @param request request for the website
+     * @param response response sent to the website
+     * @throws ServletException thrown by RequestDispatcher
+     * @throws IOException thrown by RequestDispatcher
+     */
+	public void overviewPage(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) throws ServletException, IOException {
+        if (request.getSession().getAttribute("username") == null) {
+	            response.sendRedirect("Login");
+	    } else {
+	            List<String> messages = new ArrayList<>();
+	            request.setAttribute("messages", messages);
+	            request.getRequestDispatcher(OVERVIEW).forward(request, response);
+	    }
+    }
+	
+    /**
+     * Performs a password change and displays the overview page
+     * @param request request for the website
+     * @param response response sent to the website
+     * @throws ServletException thrown by RequestDispatcher
+     * @throws IOException thrown by RequestDispatcher
+     */
+    public static void doChange(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) throws ServletException, IOException {
+            if (request.getSession().getAttribute("username") == null) {
+                    response.sendRedirect("Login");
+            } else {
+                    List<String> messages = new ArrayList<>();
+                    try {
+                            if (Company.changePassword((String)request.getSession().getAttribute("username"),  request.getParameter("oldpassword"), request.getParameter("newpassword")))
+                                    messages.add("Password ge&auml;ndert");
+                            else
+                                    messages.add("Falsches Passwort");
+                    } catch (SQLException e) {
+                            System.err.println(e.getMessage());
+                            response.sendError(500);
+                    }
+                    
+                    request.setAttribute("messages", messages);
+                    request.getRequestDispatcher(OVERVIEW).forward(request, response);
+            }
+    }
+	
+    /**
+     * Displays a registration and shows a result.
+     * @param request request for the website
+     * @param response response sent to the website
+     * @throws ServletException thrown by RequestDispatcher
+     * @throws IOException thrown by RequestDispatcher
+     */
+	public void regsiterPage(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) throws ServletException, IOException {
+		List<String> messages = new ArrayList<>();
+		request.setAttribute("messages", messages);
+		request.getRequestDispatcher(REGISTER).forward(request, response);
 	}
 	
-	public void activatePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * Performs a registration and shows a result.
+     * @param request request for the website
+     * @param response response sent to the website
+     * @throws ServletException thrown by RequestDispatcher
+     * @throws IOException thrown by RequestDispatcher
+     */
+	public void doRegister(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
-		Company c = new Company(con);
-		boolean activate = false;
-		try {
-			activate = c.activate(request.getParameter("acode"));
-		} catch (SQLException e) {
-			messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
-		}
-		if (activate) {
-			c.sendLoginData();
-			request.setAttribute("message", "Aktivierung erfolgreich! Sie bekommen ihr Username und Passwort per Mail zugesant.");
-			request.getRequestDispatcher(SUCCESS).forward(request, response);
-		} else {
-			if (messages.size() == 0) messages.add("activierungs code ist ungültig");
-			request.setAttribute("message", messages.get(0));
-			request.getRequestDispatcher(SUCCESS).forward(request, response);
-		}
-
-	}
-	
-	public void regsiterPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<String> messages = new ArrayList<>();
-		Company c = new Company(con);
+		Company c = new Company();
 		c.setName(request.getParameter("firma"));
 		c.setAddress(request.getParameter("address"));
-		try { c.setZip(Integer.parseInt(request.getParameter("plz"))); } catch (NumberFormatException e) { messages.add("Ungültige PLZ"); }
+		if (request.getParameter("plz") != null)
+			try { c.setZip(Integer.parseInt(request.getParameter("plz"))); } catch (NumberFormatException e) { messages.add("Ungültige PLZ"); }
 		c.setTown(request.getParameter("town"));
 		c.setMail(request.getParameter("mail"));
 		messages.addAll(c.validate());
@@ -74,23 +120,38 @@ public class Controller {
 			request.setAttribute("messages", messages);
 			request.getRequestDispatcher(REGISTER).forward(request, response);
 		} else {
-			c.setActivation(UUID.randomUUID().toString());
 			try {
+				c.setUsername(createUsername(c.getName()));
+				c.setPassword(String.valueOf(UUID.randomUUID()), true);
 				c.save();
 			} catch (SQLException e) {
 				messages.add("Datenbankverbindung fehlgeschlagen, bitte versuchen sie es später noch einmal");
 				request.setAttribute("messages", messages);
 				request.getRequestDispatcher(REGISTER).forward(request, response);
+				return;
 			}
-			c.sendActivationCode();
-			request.setAttribute("message", "Registrierung erfolgreich, bitte warten sie auf den Aktivierungslink per Mail");
+			c.sendLoginData();
+			request.setAttribute("message", "Registrierung erfolgreich, sie erhalten die Logindaten per Mail");
 			request.getRequestDispatcher(SUCCESS).forward(request, response);
 		}
 	}
 	
-	public void loginPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void loginPage(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) throws ServletException, IOException {
 		List<String> messages = new ArrayList<>();
-		Company c = new Company(con);
+		request.setAttribute("messages", messages);
+		request.getRequestDispatcher(LOGIN).forward(request, response);
+	}
+	
+    /**
+     * Performs the login page of the website.
+     * @param request request for the website
+     * @param response response sent to the website
+     * @throws ServletException thrown by RequestDispatcher
+     * @throws IOException thrown by RequestDispatcher
+     */
+	public void doLogin(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response) throws ServletException, IOException {
+		List<String> messages = new ArrayList<>();
+		Company c = new Company();
 		boolean login = false;
 		try {
 			login = c.checkLogin(request.getParameter("user"), request.getParameter("password"));
@@ -106,5 +167,26 @@ public class Controller {
 			request.setAttribute("messages", messages);
 			request.getRequestDispatcher(LOGIN).forward(request, response);
 		}
+	}
+	
+	private final String createUsername(String name) throws SQLException {
+        String usernameBase = name != null ? name.replace(" ", "") : "";
+        int tries = 0;
+        
+        String newUsername;
+        boolean collision;
+        try (Connection con = DbConnection.getConnection()) {
+                do {
+                        newUsername = usernameBase + (tries > 0 ? tries : "");
+                        tries++;
+                
+                        try (PreparedStatement stm = con.prepareStatement("SELECT `username` FROM `company` WHERE `username` = ? ")) {
+                                stm.setString(1, newUsername);
+                                collision = stm.executeQuery().next();
+                        }
+                } while (collision);
+                
+                return newUsername;
+        }
 	}
 }

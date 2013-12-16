@@ -13,7 +13,7 @@
 </style>
 </head>
 <body>
-<form method="POST" action='/AbsiUebung2/RattleBits' name="register">
+<form method="POST" action='/AbsiUebung2/' name="register">
 <ul class="error">
 <%
     List<String> messages = (List<String>)request.getAttribute("messages");

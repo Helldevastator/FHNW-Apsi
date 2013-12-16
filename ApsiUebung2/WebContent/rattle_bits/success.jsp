@@ -8,6 +8,6 @@
 </head>
 <body>
 ${message}<br />
-<a href="/AbsiUebung2/RattleBits">zur Startseite</a>
+<a href="/AbsiUebung2/">zur Startseite</a>
 </body>
 </html>

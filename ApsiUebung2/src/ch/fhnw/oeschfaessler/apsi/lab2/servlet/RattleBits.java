@@ -1,8 +1,7 @@
 package ch.fhnw.oeschfaessler.apsi.lab2.servlet;
 
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,40 +14,26 @@ import ch.fhnw.oeschfaessler.apsi.lab2.Controller;
 /**
  * Servlet implementation class RattleBits
  */
-@WebServlet("/RattleBits")
+@WebServlet("/")
 public class RattleBits extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private final Controller controller;
 
-	/**
-	 * @throws SQLException
-	 * @throws ClassNotFoundException
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public RattleBits() throws SQLException, ClassNotFoundException {
-		super();
-		Class.forName("com.mysql.jdbc.Driver");
-		controller = new Controller(
-				DriverManager
-						.getConnection("jdbc:mysql://localhost/apsi_lab?user=root"));
-	}
+	public RattleBits() { super(); controller = new Controller(); }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String page = request.getParameter("page");
 		if ("login".equals(page)) {
 			controller.loginPage(request, response);
 		} else if ("register".equals(page)) {
 			controller.regsiterPage(request, response);
-		} else if ("activate".equals(page)) {
-			controller.activatePage(request, response);
 		} else {
 			controller.indexPage(request, response);
 		}
@@ -64,9 +49,9 @@ public class RattleBits extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		if (request.getParameter("register") != null) {
-			controller.regsiterPage(request, response);
+			controller.doRegister(request, response);
 		} else if (request.getParameter("login") != null) {
-			controller.loginPage(request, response);
+			controller.doLogin(request, response);
 		}
 
 	}
