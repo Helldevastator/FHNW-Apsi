@@ -13,6 +13,7 @@
 <form method="POST" action='/AbsiUebung2/Login' name="login">
 <ul class="error">
 <%
+	@SuppressWarnings("unchecked")
     List<String> messages = (List<String>)request.getAttribute("messages");
 	Iterator<String> it = messages.iterator();
     while (it.hasNext()) {
