@@ -33,6 +33,7 @@ import javax.naming.directory.InitialDirContext;
 import ch.fhnw.oeschfaessler.apsi.lab2.DatabaseFactory;
 import ch.fhnw.oeschfaessler.apsi.lab2.MailSendErrorException;
 import ch.fhnw.oeschfaessler.apsi.lab2.MailSessionFactory;
+import ch.fhnw.oeschfaessler.apsi.lab2.Tools;
 
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
@@ -46,7 +47,7 @@ public class Company {
 	private static final String VALIDATE_ADDRESS  = "([ôÔêÊâÂèéÈÉäöüÄÖÜß\\-\\._\\w\\d ]+)";
 	private static final String VALIDATE_TOWN     = "([ôÔêÊâÂèéÈÉäöüÄÖÜß\\-\\._\\w\\s\\d]+)";
 	private static final String VALIDATE_MAIL     = "([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)";
-	private static final String VALIDATE_PASSWORD = "([ôÔêÊâÂèéÈÉäöüÄÖÜß\\-\\._\\w]+)";
+	
 	
 	@CheckForNull private final String name;
 	@CheckForNull private final String address;
@@ -136,7 +137,7 @@ public class Company {
 		try (Connection con = DatabaseFactory.getConnection()) {
 			PreparedStatement stm = con.prepareStatement("SELECT  `username`, `name`, `address`, `zip`, `town`, `mail` FROM company WHERE username = ? AND password = ? ");
 			stm.setString(1, user);
-			stm.setString(2, hash(password));
+			stm.setString(2, Tools.hash(password));
 			ResultSet rs = stm.executeQuery();
 			return rs.next();
 		}
@@ -164,7 +165,7 @@ public class Company {
 	    	else if (!address.matches(VALIDATE_ADDRESS)) { errors.add("Ung&uuml;ltige Adresse."); }
 	    } else 											   errors.add("Keine Adresse.");
 	    
-	    if (zip < 1000 || zip > 9999 || !validatePlz(zip))
+	    if (zip < 1000 || zip > 9999 || !Tools.checkZIP(zip))
 	    	errors.add("Ung&uuml;ltige Postleitzahl.");
 	    
 	    if (town != null) { 
@@ -175,7 +176,7 @@ public class Company {
 	    
 	    if (mail != null) {
 	    	s = mail.trim();
-	    	if (s.isEmpty() || !s.matches(VALIDATE_MAIL) || !mxLookup(s)) {
+	    	if (s.isEmpty() || !s.matches(VALIDATE_MAIL) || !Tools.checkMail(s)) {
 	        	errors.add("Ung&uuml;ltige Email-Adresse.");
 	        }
 	    } else errors.add("Keine Email-Adresse");
@@ -195,7 +196,7 @@ public class Company {
 		try (Connection con = DatabaseFactory.getConnection()) {
 			PreparedStatement stm = con.prepareStatement("INSERT INTO `company`(`username`, `password`, `name`, `address`, `zip`, `town`, `mail`) VALUES (?,?,?,?,?,?,?)");
 			stm.setString(1, username);
-			stm.setString(2, hash(password));
+			stm.setString(2, Tools.hash(password));
 			stm.setString(3, name);
 			stm.setString(4, address);
 			stm.setInt(5, zip);
@@ -228,83 +229,16 @@ public class Company {
 		if (username == null || oldPassword == null|| newPassword == null) return false;
 		try (Connection con = DatabaseFactory.getConnection()) {
 			PreparedStatement stm = con.prepareStatement("UPDATE `company` SET `password`= ? WHERE `username`= ? AND `password` = ?");
-			stm.setString(1, hash(newPassword));
+			stm.setString(1, Tools.hash(newPassword));
 			stm.setString(2, username);
-			stm.setString(3, hash(oldPassword));
+			stm.setString(3, Tools.hash(oldPassword));
 			stm.execute();
 			return stm.getUpdateCount() > 0;
 		} 
 	}
 	
-	/**
-	 * Gets the hash of a string
-	 * @param string
-	 * @return hash
-	 */
-	@Nonnull
-	@CheckReturnValue
-	private static String hash(@Nonnull String s) {
-		try {
-			byte[] data = null;
-			try { data = MessageDigest.getInstance("SHA-256").digest(s.getBytes("UTF-8")); } 
-			catch (NoSuchAlgorithmException e) { throw new AssertionError("SHA-256 wird nicht unterstützt"); }
-			return new String(data, "UTF-8");
-			
-		} catch (UnsupportedEncodingException e) {
-			throw new AssertionError("Zeichencodierung UTF-8 wird nicht unterstützt");
-		}
-	}
-	
-	/**
-	 * Checks if a mail is valid
-	 * @param mail email adress
-	 * @return state if the email is valid
-	 */
-	@CheckReturnValue
-	private static final boolean mxLookup(@Nonnull String mail) {
-		Hashtable<String, String> env = new Hashtable<String, String>();
-		env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
-		try {
-			String[] temp = mail.split("@");
-			Attributes attrs = (new InitialDirContext(env)).getAttributes(temp[1], new String[] {"MX"});
-			return !(attrs.get("MX") == null);
-		} catch (NamingException e) { return false; }
-	}
-	
-	/**
-	 * Validates the zip code with the post.ch website
-	 * @param zip zip
-	 * @return state if the zip is valid
-	 */
-	@CheckReturnValue
-	private static final boolean validatePlz(int zip) {
-		String line;
-		BufferedReader rd = null;
-		try {
-			HttpURLConnection conn = (HttpURLConnection) (new URL("http://www.post.ch/db/owa/pv_plz_pack/pr_check_data?p_language=de&p_nap="+zip)).openConnection();
-			conn.setRequestMethod("GET");
-			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			while ((line = rd.readLine()) != null) if(line.contains("Keine PLZ gefunden")) return false;
-		} catch (IOException e) { System.err.println(e.getMessage()); } 
-		finally { if (rd != null) try { rd.close(); } catch (IOException e) {} }
-		return true;
-	}
 
-	/**
-	 * Validates the given password
-	 * @param pw password
-	 * @return state if password is valid
-	 */
-	public static final String validatePassword(String pw) {
-		String error = null;
-		if (pw != null) {
-			String s = pw.trim();
-			if (s.length() < 8 || s.length() > 64) {  error = "Passwort zu kurz/lang (min. 8 Zeichen/max. 64 Zeichen)."; } 
-			else if (!s.matches(VALIDATE_PASSWORD)) { error = "Ungültige Zeichen im Passwort."; }
-		} else {                                      error = "Passwort eingeben."; }
-		return error;
-	}
-	
+
 	/**
 	 * Creates a new Username 
 	 * @return new username

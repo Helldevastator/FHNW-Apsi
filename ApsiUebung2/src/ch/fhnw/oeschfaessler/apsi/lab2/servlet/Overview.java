@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ch.fhnw.oeschfaessler.apsi.lab2.Tools;
 import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
 
 /**
@@ -55,7 +56,7 @@ public class Overview extends HttpServlet {
 
 		List<String> messages = new ArrayList<>();
 		String newPassword = request.getParameter("newpassword");
-		String pwMessage = Company.validatePassword(newPassword);
+		String pwMessage = Tools.validatePassword(newPassword);
 		if (pwMessage != null) {
 			messages.add(pwMessage);
 		} else {
