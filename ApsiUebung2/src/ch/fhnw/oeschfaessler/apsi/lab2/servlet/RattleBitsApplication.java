@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * Main servlet application stating point
  */
 @WebServlet("/")
-public class Index extends HttpServlet {
+public class RattleBitsApplication extends HttpServlet {
 
 	private static final long serialVersionUID = 535610773188857639L;
 	private final static String INDEX = "rattle_bits/index.jsp";
