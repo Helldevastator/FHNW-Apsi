@@ -57,7 +57,7 @@ public class Register extends HttpServlet {
 		} catch (NumberFormatException e) { messages.add("Ungültige PLZ"); }
 		
 		Company c = new Company(request.getParameter("firma"), request.getParameter("address"), zip, request.getParameter("town"), request.getParameter("mail"));
-		messages.addAll(c.validate());
+		messages.addAll(Tools.validateCompany(c));
 		if (messages.size() > 0) {
 			request.setAttribute("messages", messages);
 			request.getRequestDispatcher(REGISTER).forward(request, response);

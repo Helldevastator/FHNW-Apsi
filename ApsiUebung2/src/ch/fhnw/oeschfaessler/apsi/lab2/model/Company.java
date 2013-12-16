@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.CheckForNull;
@@ -28,12 +26,6 @@ import ch.fhnw.oeschfaessler.apsi.lab2.util.*;
  */
 public class Company {
 
-	private static final String VALIDATE_NAME     = "([ôÔêÊâÂèéÈÉäöüÄÖÜß\\-\\._\\w]+)";
-	private static final String VALIDATE_ADDRESS  = "([ôÔêÊâÂèéÈÉäöüÄÖÜß\\-\\._\\w\\d ]+)";
-	private static final String VALIDATE_TOWN     = "([ôÔêÊâÂèéÈÉäöüÄÖÜß\\-\\._\\w\\s\\d]+)";
-	private static final String VALIDATE_MAIL     = "([^.@]+)(\\.[^.@]+)*@([^.@]+\\.)+([^.@]+)";
-	
-	
 	@CheckForNull private final String name;
 	@CheckForNull private final String address;
 	@CheckForNull private final String town;
@@ -126,47 +118,6 @@ public class Company {
 			ResultSet rs = stm.executeQuery();
 			return rs.next();
 		}
-	}
-
-	/**
-	 * Validates the fields
-	 * @return Error messages of the validation
-	 */
-	@Nonnull
-	@CheckReturnValue
-	public List<String> validate() {
-		List<String> errors = new ArrayList<>();
-		String s;
-	    if (name != null) {
-	    	 s = name.trim();
-	    	if (s.isEmpty()) {                    errors.add("Firmenname eingeben."); } 
-	    	else if (s.length() > 20) {           errors.add("Firmenname zu lang (max. 20 Zeichen)."); } 
-	    	else if (!s.matches(VALIDATE_NAME)) { errors.add("Ung&uuml;ltige Zeichen im Firmennamen"); }
-	    } else 									  errors.add("Firmenname eingeben.");
-	    
-	    if (address != null) {
-	    	s = address.trim();
-	    	if (s.isEmpty()) {						       errors.add("Keine Adresse."); } 
-	    	else if (!address.matches(VALIDATE_ADDRESS)) { errors.add("Ung&uuml;ltige Adresse."); }
-	    } else 											   errors.add("Keine Adresse.");
-	    
-	    if (zip < 1000 || zip > 9999 || !Tools.checkZIP(zip))
-	    	errors.add("Ung&uuml;ltige Postleitzahl.");
-	    
-	    if (town != null) { 
-	    	s = town.trim();
-	    	if (s.isEmpty()) {					  errors.add("Keine Stadt."); } 
-	    	else if (!s.matches(VALIDATE_TOWN)) { errors.add("Ung&uuml;ltige Stadt."); }
-	    } else 									  errors.add("Keine Stadt.");
-	    
-	    if (mail != null) {
-	    	s = mail.trim();
-	    	if (s.isEmpty() || !s.matches(VALIDATE_MAIL) || !Tools.checkMail(s)) {
-	        	errors.add("Ung&uuml;ltige Email-Adresse.");
-	        }
-	    } else errors.add("Keine Email-Adresse");
-	    
-		return errors;
 	}
 	
 	/**
