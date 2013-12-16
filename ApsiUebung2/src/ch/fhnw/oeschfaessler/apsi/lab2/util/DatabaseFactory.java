@@ -1,4 +1,4 @@
-package ch.fhnw.oeschfaessler.apsi.lab2;
+package ch.fhnw.oeschfaessler.apsi.lab2.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

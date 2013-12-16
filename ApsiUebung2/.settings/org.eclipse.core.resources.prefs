@@ -1,10 +1,10 @@
 eclipse.preferences.version=1
-encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/DatabaseFactory.java=UTF-8
-encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/MailSendErrorException.java=UTF-8
-encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/MailSessionFactory.java=UTF-8
-encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/Tools.java=UTF-8
 encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/model/Company.java=UTF-8
 encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/servlet/Index.java=UTF-8
 encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/servlet/Login.java=UTF-8
 encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/servlet/Overview.java=UTF-8
 encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/servlet/Register.java=UTF-8
+encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/util/DatabaseFactory.java=UTF-8
+encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/util/MailSendErrorException.java=UTF-8
+encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/util/MailSessionFactory.java=UTF-8
+encoding//src/ch/fhnw/oeschfaessler/apsi/lab2/util/Tools.java=UTF-8

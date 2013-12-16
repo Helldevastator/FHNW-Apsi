@@ -1,4 +1,4 @@
-package ch.fhnw.oeschfaessler.apsi.lab2;
+package ch.fhnw.oeschfaessler.apsi.lab2.util;
 
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>

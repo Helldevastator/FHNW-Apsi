@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ch.fhnw.oeschfaessler.apsi.lab2.Tools;
 import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
+import ch.fhnw.oeschfaessler.apsi.lab2.util.Tools;
 
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>

@@ -1,19 +1,10 @@
 package ch.fhnw.oeschfaessler.apsi.lab2.model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,14 +17,8 @@ import javax.mail.MessagingException;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.InitialDirContext;
 
-import ch.fhnw.oeschfaessler.apsi.lab2.DatabaseFactory;
-import ch.fhnw.oeschfaessler.apsi.lab2.MailSendErrorException;
-import ch.fhnw.oeschfaessler.apsi.lab2.MailSessionFactory;
-import ch.fhnw.oeschfaessler.apsi.lab2.Tools;
+import ch.fhnw.oeschfaessler.apsi.lab2.util.*;
 
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
