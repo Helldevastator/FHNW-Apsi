@@ -37,6 +37,7 @@ import ch.fhnw.oeschfaessler.apsi.lab2.MailSessionFactory;
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
  * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
+ * 
  * This class represents the company model.
  */
 public class Company {
@@ -72,8 +73,8 @@ public class Company {
 	 * @param name Name of the company
 	 * @param address Address of the company
 	 * @param zip Zip code of the company
-	 * @param town Town where the company is located
-	 * @param mail Email address of the company
+	 * @param town Town of the company
+	 * @param mail Email of the company
 	 */
 	public Company(@CheckForNull String firma, @CheckForNull String address, int zip, @CheckForNull String town, @CheckForNull String mail) {
 		this.name = firma;
@@ -84,7 +85,7 @@ public class Company {
 	}
 
 	/**
-	 * Gets the name of the company.
+	 * Returns the name of the company
 	 * @return name
 	 */
 	@CheckForNull 
@@ -92,7 +93,7 @@ public class Company {
 	public final String getName() { return name; }
 
 	/**
-	 * Gets the address of the company.
+	 * Returns the address of the company
 	 * @return address
 	 */
 	@CheckForNull 
@@ -100,7 +101,7 @@ public class Company {
 	public final String getAddress() { return address; }
 
 	/**
-	 * Gets the zip code of the company.
+	 * Returns the zip code of the company
 	 * @return zip code
 	 */
 	@CheckForNull 
@@ -108,7 +109,7 @@ public class Company {
 	public final int getZip() { return zip; }
 
 	/**
-	 * Gets the town of the company.
+	 * Returns the town of the company
 	 * @return town
 	 */
 	@CheckForNull 
@@ -116,7 +117,7 @@ public class Company {
 	public final String getTown() { return town; }
 
 	/**
-	 * Gets the email address of the company.
+	 * Returns the email address of the company
 	 * @return email address
 	 */
 	@CheckForNull 
@@ -124,10 +125,10 @@ public class Company {
 	public final String getMail() { return mail; }
 
 	/**
-	 * Checks if login data is correct and loads the user data.
-	 * @param user Username for the company to log in
-	 * @param password Password for the company to log in
-	 * @return Data of the company
+	 * Checks if login data is correct
+	 * @param user Username
+	 * @param password Password
+	 * @return state if the login date is valid
 	 * @throws SQLException thrown if problems with database occur
 	 */
 	public static boolean checkLogin(@CheckForNull String user, @CheckForNull String password) throws SQLException {
@@ -142,8 +143,8 @@ public class Company {
 	}
 
 	/**
-	 * Validates the fields of the company.
-	 * @return Error message of the validation
+	 * Validates the fields
+	 * @return Error messages of the validation
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -183,10 +184,9 @@ public class Company {
 	}
 	
 	/**
-	 * Saves the company to the database.
-	 * @return reference to the company
+	 * Saves the company into the db
 	 * @throws SQLException thrown on database errors
-	 * @throws MailSendErrorException 
+	 * @throws MailSendErrorException thrown if the login data could not be sent
 	 */
 	@Nonnull
 	public final void save() throws SQLException, MailSendErrorException {
@@ -217,12 +217,11 @@ public class Company {
 	}
 	
 	/**
-	 * Changes the password for the company 
-	 * if the credentials are correct.
-	 * @param username Username of the company
-	 * @param oldPassword old password of the company
-	 * @param newPassword new password of the company
-	 * @return true if password was changed
+	 * Changes the password of a user
+	 * @param username Username
+	 * @param oldPassword old password
+	 * @param newPassword new password
+	 * @return state if the password could be changed
 	 * @throws SQLException thrown on database errors
 	 */
 	public static final boolean changePassword(@CheckForNull String username, @CheckForNull String oldPassword, @CheckForNull String newPassword) throws SQLException {
@@ -238,9 +237,9 @@ public class Company {
 	}
 	
 	/**
-	 * Gets the SHA-256 hash of a String.
-	 * @param s String to hash
-	 * @return hash of the String
+	 * Gets the hash of a string
+	 * @param string
+	 * @return hash
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -257,10 +256,9 @@ public class Company {
 	}
 	
 	/**
-	 * Checks if a Mailserver is registered for the specified
-	 *  email adress.
-	 * @param mail email adress to check
-	 * @return true if mailserver is registered
+	 * Checks if a mail is valid
+	 * @param mail email adress
+	 * @return state if the email is valid
 	 */
 	@CheckReturnValue
 	private static final boolean mxLookup(@Nonnull String mail) {
@@ -274,9 +272,9 @@ public class Company {
 	}
 	
 	/**
-	 * Validates the zip code with the post.ch service.
-	 * @param zip zip to validate
-	 * @return true if correct code
+	 * Validates the zip code with the post.ch website
+	 * @param zip zip
+	 * @return state if the zip is valid
 	 */
 	@CheckReturnValue
 	private static final boolean validatePlz(int zip) {
@@ -293,9 +291,9 @@ public class Company {
 	}
 
 	/**
-	 * Validates the given password.
+	 * Validates the given password
 	 * @param pw password
-	 * @return true if password is valid
+	 * @return state if password is valid
 	 */
 	public static final String validatePassword(String pw) {
 		String error = null;
@@ -308,7 +306,7 @@ public class Company {
 	}
 	
 	/**
-	 * Creates a new Username with the name of the company as a base.
+	 * Creates a new Username 
 	 * @return new username
 	 * @throws SQLException thrown on database error
 	 */

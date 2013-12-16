@@ -17,7 +17,8 @@ import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
  * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
- * Handles requests for the overview page.
+ * 
+ * Servlet for the overview page after login
  */
 @WebServlet("/Overview")
 public class Overview extends HttpServlet {
@@ -26,9 +27,8 @@ public class Overview extends HttpServlet {
 	private final static String OVERVIEW = "rattle_bits/overview.jsp";
 
 	/**
-	 * Displays the overview page.
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Shows overview page
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
 	protected void doGet(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) throws ServletException, IOException {
@@ -42,7 +42,7 @@ public class Overview extends HttpServlet {
 	}
 
 	/**
-	 * Handles password change requests.
+	 * do the passwort change
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
@@ -54,7 +54,6 @@ public class Overview extends HttpServlet {
 		}
 
 		List<String> messages = new ArrayList<>();
-				
 		String newPassword = request.getParameter("newpassword");
 		String pwMessage = Company.validatePassword(newPassword);
 		if (pwMessage != null) {

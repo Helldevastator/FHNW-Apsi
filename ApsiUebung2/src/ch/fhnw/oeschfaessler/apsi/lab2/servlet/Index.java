@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
  * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
- * This Servlet handles requests for the Index page.
+ * 
+ * Main servlet application stating point
  */
 @WebServlet("/")
 public class Index extends HttpServlet {
@@ -21,7 +22,7 @@ public class Index extends HttpServlet {
 	private final static String INDEX = "rattle_bits/index.jsp";
 	
 	/**
-	 * Displays the index page.
+	 * shows index page
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override

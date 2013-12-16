@@ -6,8 +6,17 @@ import java.sql.SQLException;
 
 import com.sun.istack.internal.NotNull;
 
+/**
+ * @author Jan Fässler <jan.faessler@students.fhnw.ch>
+ * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
+ * 
+ * This class is a factory for the database connection
+ */
 public final class DatabaseFactory {
 	
+	/**
+	 * Constructor of the class
+	 */
 	private DatabaseFactory(){}
 	
     /**

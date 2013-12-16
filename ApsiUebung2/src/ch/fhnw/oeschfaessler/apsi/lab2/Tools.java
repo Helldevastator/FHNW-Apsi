@@ -5,18 +5,14 @@ import javax.annotation.Nonnull;
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
  * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
- * This class provides useful methods for the application.
+ * 
+ * Tool class for some encoding stuff
  */
 public final class Tools {
+
 	/**
-	 * No instances should be crated.
-	 */
-	private Tools(){}
-	
-	/**
-	 * Encodes possible dangerous characters in the String 
-	 * for usage in a HTML page.
-	 * @param s String to encode
+	 * Encodes html tags
+	 * @param s string
 	 * @return encoded string
 	 */
 	@Nonnull
@@ -26,7 +22,6 @@ public final class Tools {
 	        char c = s.charAt(i);
 	        if(c > 127 || c=='"' || c=='<' || c=='>') out.append("&#"+(int)c+";");
 	        else out.append(c);
-
 	    }
 	    return out.toString();
 	}

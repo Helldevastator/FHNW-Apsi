@@ -18,7 +18,8 @@ import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
  * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
- * Handles requests for the Login page.
+ * 
+ * Servlet for the login processs
  */
 @WebServlet("/Login")
 public class Login extends HttpServlet {
@@ -27,9 +28,8 @@ public class Login extends HttpServlet {
 	private final static String LOGIN = "rattle_bits/login.jsp";
 
 	/**
-	 * Displays the Login page.
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Shows login page
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
 	protected void doGet(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) throws ServletException, IOException {
@@ -40,7 +40,7 @@ public class Login extends HttpServlet {
 	}
 
 	/**
-	 * Performs login and possible redirects.
+	 * Does login process
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override

@@ -19,7 +19,8 @@ import ch.fhnw.oeschfaessler.apsi.lab2.model.Company;
 /**
  * @author Jan Fässler <jan.faessler@students.fhnw.ch>
  * @author Fabio Oesch <fabio.oesch@students.fhwn.ch>
- * Handles requests for the register page.
+ * 
+ * Servlet for the registration process
  */
 @WebServlet("/Register")
 public class Register extends HttpServlet {
@@ -29,9 +30,8 @@ public class Register extends HttpServlet {
 	private final static String SUCCESS = "rattle_bits/success.jsp";
 
 	/**
-	 * Displays the register page.
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Shows register page
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
 	protected void doGet(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) throws ServletException, IOException {
@@ -39,7 +39,7 @@ public class Register extends HttpServlet {
 	}
 
 	/**
-	 * Performs the registration.
+	 * do the registration
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@Override
