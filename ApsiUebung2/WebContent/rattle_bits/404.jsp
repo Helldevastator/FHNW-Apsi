@@ -4,10 +4,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-<title>RattleBits</title>
+<title>Error</title>
 </head>
-<body>
-<h1>RattleBits</h1>
-<a href="/AbsiUebung2/Register">register</a> | <a href="/AbsiUebung2/Login">login</a>
+<body bgcolor="LightGray">
+<center>
+	<h1>Seite nicht gefunden</h1>
+</center>
 </body>
 </html>

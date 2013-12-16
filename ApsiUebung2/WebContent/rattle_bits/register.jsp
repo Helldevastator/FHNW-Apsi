@@ -13,15 +13,16 @@
 </style>
 </head>
 <body>
-<form method="POST" action='/AbsiUebung2/' name="register">
+<form method="POST" action='/AbsiUebung2/Register' name="register">
 <ul class="error">
 <%
     List<String> messages = (List<String>)request.getAttribute("messages");
+if (messages != null && messages.size() > 0) {
 	Iterator<String> it = messages.iterator();
     while (it.hasNext()) {
 %>
 	<li><%= it.next() %></li>
-<% } %>
+<% } } %>
 </ul>
 <table>
 	<tr>

@@ -8,7 +8,7 @@
 <title>RattleBits</title>
 </head>
 <body bgcolor="LightGray">
-<form method="POST" action='/ApsiUebung2/?page=overview' name="change">
+<form method="POST" action='/ApsiUebung2/Overview' name="change">
 <ul class="error">
 <%
 	@SuppressWarnings("unchecked")
