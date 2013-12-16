@@ -6,9 +6,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>RattleBits</title>
+<style>
+.error {
+	color: red;
+}
+</style>
 </head>
-<body bgcolor="LightGray">
-<form method="POST" action='/ApsiUebung2/Overview' name="change">
+<body>
+<form method="POST" action="/AbsiUebung2/Overview" name="change">
 <ul class="error">
 <%
 	@SuppressWarnings("unchecked")

@@ -7,9 +7,6 @@
 .error {
 	color: red;
 }
-.error input {
-	border: 1px solid red;
-}
 </style>
 </head>
 <body>

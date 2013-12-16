@@ -7,9 +7,6 @@
 .error {
 	color: red;
 }
-.error input {
-	border: 1px solid red;
-}
 </style>
 </head>
 <body>
@@ -30,7 +27,7 @@
 	</tr>
 	<tr>
 		<th>Password:</th>
-		<td><input type="text" name="password" value="${param.password}" /></td>
+		<td><input type="password" name="password" value="${param.password}" /></td>
 	</tr>
 	<tr>
 		<td colspan="2"><input type="submit" name="login" value="Registrieren" /></td>
