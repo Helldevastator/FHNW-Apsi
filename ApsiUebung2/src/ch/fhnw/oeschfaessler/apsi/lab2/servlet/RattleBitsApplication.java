@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/")
 public class RattleBitsApplication extends HttpServlet {
 
+	private static final long serialVersionUID = 5167577532408955296L;
 	private final static String INDEX = "rattle_bits/index.jsp";
 	
 	/**

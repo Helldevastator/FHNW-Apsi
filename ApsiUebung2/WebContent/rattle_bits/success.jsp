@@ -7,7 +7,7 @@
 <title>RattleBits</title>
 </head>
 <body>
-${message}<br />
-<a href="/AbsiUebung2/">zur Startseite</a>
+${param.message}<br />
+<a href="">zur Startseite</a>
 </body>
 </html>

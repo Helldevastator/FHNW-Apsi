@@ -162,4 +162,32 @@ public final class Tools {
 	    
 		return errors;
 	}
+	
+    /**
+     * Returns a quote
+     * @return new Quote
+     */
+    @CheckReturnValue
+    @Nonnull
+    public static final String getFortuneQuote() {
+        BufferedReader rd = null;
+        String line = null;
+        String quote = "";
+        try {
+            HttpURLConnection conn = (HttpURLConnection) (new URL("http://www.fullerdata.com/FortuneCookie/FortuneCookie.asmx/GetFortuneCookie")).openConnection();
+            conn.setRequestMethod("GET");
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = rd.readLine()) != null) {
+                if(!line.contains("<?xml") && !line.contains("<string") && !line.contains("string>")) {
+                        quote += line+"\n";
+                }
+            }
+        } catch (IOException e) {
+                return "Only two things are infinite, the universe and human stupidity, and I'm not sure about the former. - Albert Einstein";
+        } finally {
+        	try { if (rd != null) rd.close(); } catch (IOException e) {  }
+        }
+        
+        return Tools.encodeHTML(quote);
+    }
 }

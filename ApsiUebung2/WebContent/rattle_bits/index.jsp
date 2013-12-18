@@ -8,6 +8,6 @@
 </head>
 <body>
 <h1>RattleBits</h1>
-<a href="/AbsiUebung2/Register">register</a> | <a href="/AbsiUebung2/Login">login</a>
+<a href="Register">register</a> | <a href="Login">login</a>
 </body>
 </html>

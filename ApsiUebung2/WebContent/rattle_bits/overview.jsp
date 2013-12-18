@@ -25,6 +25,10 @@
 <% } %>
 </ul>
 <h1>RattleBits AG</h1>
+<p>
+	<strong>Zitat des Tages:</strong><br />
+	${quote}
+</p>
 <table>
 	<tr>
 		<th>Altes Passwort:</th>

@@ -37,6 +37,7 @@ public class Overview extends HttpServlet {
 			response.sendRedirect("Login");
 		} else {
 			List<String> messages = new ArrayList<>();
+			request.setAttribute("quote", Tools.getFortuneQuote());
 			request.setAttribute("messages", messages);
 			request.getRequestDispatcher(OVERVIEW).forward(request, response);
 		}
@@ -70,6 +71,7 @@ public class Overview extends HttpServlet {
 			}
 		}
 		request.setAttribute("messages", messages);
+		request.setAttribute("quote", Tools.getFortuneQuote());
 		request.getRequestDispatcher(OVERVIEW).forward(request, response);
 	}
 }

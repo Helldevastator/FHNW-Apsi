@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-<form method="POST" action='/AbsiUebung2/Login' name="login">
+<form method="POST" action='Login' name="login">
 <ul class="error">
 <%
 	@SuppressWarnings("unchecked")

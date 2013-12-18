@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-<form method="POST" action='/AbsiUebung2/Register' name="register">
+<form method="POST" action="Register" name="register">
 <ul class="error">
 <%
 	@SuppressWarnings("unchecked")
