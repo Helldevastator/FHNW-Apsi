@@ -31,6 +31,6 @@ public final class DatabaseFactory {
             System.err.println(e.getMessage());
             throw new AssertionError("MySql driver not installed!");
         }
-        return DriverManager.getConnection("jdbc:mysql://localhost/apsi_lab?user=root");
+        return DriverManager.getConnection("jdbc:mysql://localhost/apsi_lab?user=apsilab&password=12345678");
     }
 }
