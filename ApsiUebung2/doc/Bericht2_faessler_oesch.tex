@@ -194,32 +194,27 @@ dieser Laborübung sollten Sie eine erste Schutzschicht (im Sinne von Saltzer un
 in Ihrer Web-Applikation sorgfältig planen und entwickeln. Sie sollen Ihre Aufmerksamkeit
 auf die folgenden Grundprinzipien richten:
 \begin{enumerate}
- \item  Separation of privilege: Halten Sie Rechte sorgfältig auseinander. Konkret will heissen,
-dass die Programmschicht, welche die Eingaben des Benutzers sammelt, nicht auch für
-den eigentlichen Login des registrierten Benutzers verwendet werden darf.
- \item  Complete mediation: Jeder Input/Output muss verifiziert werden. Sie sollten im Vor-
-aus bestimmen, wie die erlaubte Information aussehen darf, und dann strikt die Kri-
-terien für ihre Validierung formulieren.
- \item  Fail-safe defaults: Falls der Benutzer unbewusst (oder bewusst) falsche Informatio-
-nen via HTML-Formular einschleusen will, sollte Ihre Applikation nur mit knappen
-Hinweisen reagieren und vermeiden, dass der Benutzer die Applikation allzu lange
-beansprucht (d.h. Sie sollten eine geeignete fail-safe Strategie entwerfen).
- \item  Availability and reliability: Ihre Applikation soll maximal 50 Benutzer in parallel (ohne
-nennenswerte Einbussen in der Performanz) bedienen können. Überlegen Sie, welche
-Implikationen diese Forderung für die Sicherheit Ihrer Applikation beinhaltet.
+ \item  Separation of privilege: Halten Sie Rechte sorgfältig auseinander. Konkret will heissen, dass die Programmschicht, welche die Eingaben des Benutzers sammelt, nicht auch für den eigentlichen Login des registrierten Benutzers verwendet werden darf.
+ \item  Complete mediation: Jeder Input/Output muss verifiziert werden. Sie sollten im Voraus bestimmen, wie die erlaubte Information aussehen darf, und dann strikt die Kriterien für ihre Validierung formulieren.
+ \item  Fail-safe defaults: Falls der Benutzer unbewusst (oder bewusst) falsche Informationen via HTML-Formular einschleusen will, sollte Ihre Applikation nur mit knappen Hinweisen reagieren und vermeiden, dass der Benutzer die Applikation allzu lange beansprucht (d.h. Sie sollten eine geeignete fail-safe Strategie entwerfen).
+ \item  Availability and reliability: Ihre Applikation soll maximal 50 Benutzer in parallel (ohne nennenswerte Einbussen in der Performanz) bedienen können. Überlegen Sie, welche Implikationen diese Forderung für die Sicherheit Ihrer Applikation beinhaltet.
 \end{enumerate}
+\subsection{Ergebniss}
+Mit unserer Applikation ist es möglich, dass ein anderer Computer auf den Server zugreift. Um sich einzuloggen muss ein Zertifikat heruntergeladen werden. Es ist auch nicht möglich, eine SQL-Injection oder Cross-Site Scripting zu machen.
+
+
 \section{Klassenbeschreibung}
 In diesem Abschnitt werden kurz die wichtigsten Klassen diskutiert.
 \subsection{Company}
 Die Klasse Company ist f\"{u}r die Verbindung der Datenbank mit den Inputdaten des User verantwortlich. Die Methoden checkLogin(), save(), changePassword und createUsername() greifen auf die Datenbank zu. Der Input wird mit findbugs \"{u}berpr\"{u}ft um sicher zu gehen, dass wir nicht falsche Informationen in die Datenbank speichern.
 \subsection{servlet Package}
-Die Klassen in diesem Package haben alle ein doGet() und doPost() (ausser RattleBitsApplication).
+Die Klassen in diesem Package haben alle ein doGet() und doPost() (ausser RattleBitsApplication dieses hat nur eine doGet) welche die GET/POST Anfragen behandeln.
 \subsection{Tools}
 \includegraphics[scale=1]{tools.png}\\
 Diese Klasse ist f\"{u}r die Validierung der m\"{o}glichen Eingaben. Wie die Validierung funktioniert wird in einem späteren Kapitel noch genauer erklärt.
 \section{Robust Programming}
 \subsection{SQL-Injection \& XSS Attacken}
-Damit keine Möglichkeit besteht SQL-Injections und Cross-Site Scripting Attacken zu verwenden wurde die Methode $encodeHTML()$ erzeugt. Es wird überprüft, ob der eingegebene Text Zeichen beinhaltet, die zu SQL-Injections oder XSS Attacken führen könnten. Diese Zeichen ``,$<$ und$>$ wurden aber abgefangen und ersetzt mit mit \Bold{''\&\#`` + (int) c + '';``}. Wobei $c$ das momentane Zeichen darstellt. So ist sichergestellt, dass keine SQL-Injections oder XSS Attacken durchgeführt werden können.
+Damit keine Möglichkeit besteht SQL-Injections und Cross-Site Scripting Attacken zu verwenden wurde die Methode $Tools.encodeHTML()$ erzeugt. Es wird überprüft, ob der eingegebene Text Zeichen beinhaltet, die zu SQL-Injections oder XSS Attacken führen könnten. Diese Zeichen ``,$<$ und$>$ wurden aber abgefangen und ersetzt mit mit \Bold{''\&\#`` + (int) c + '';``}. Wobei $c$ das momentane Zeichen darstellt. So ist sichergestellt, dass keine SQL-Injections oder XSS Attacken durchgeführt werden können.
 \lstinputlisting[caption=HTML Encoding, style=JavaStyle]{encodehtml.java}
 \subsection{Validierung}
 Wie schon angetönt wurde ist die Klasse Tools für die Validierung der verschiedenen Felder verantwortlich. Es wird nun noch tiefer auf die verschiedenen Methoden eingegangen.
@@ -243,25 +238,22 @@ Diese Methode ist für die Verwaltung der Validierung zuständig. \begin{enumera
  \item Zuletzt wird validiert ob die eingetragene E-Mail Adresse leer ist oder schon einmal benutzt wurde. Zusätzlich wird mit $checkMail()$ überprüft ob diese gültig ist.
 \end{enumerate}
 \lstinputlisting[caption=Company überprüfen, style=JavaStyle]{companycheck.java}
-\subsubsection{Schutz der Model-Klasse vor sch\"{a}dlichem Missbrauch}
-Die schwierigkeit einer korrekten Login-implementation liegt darin, den Ablauf so zu gestalten dass nur dieser Ablauf zu einer validen \"{a}nderung f\"{u}hrt. Heisst nur beim vorgesehenen Ablauf k\"{o}nnen nur korrekte Daten geschrieben werden, alles andere darf die Datenbank nicht ver\"{a}ndern. So sind beispielsweise setters auf das Passwort problematisch. Zusammen mit der $.save()$ Methode k\"{o}nnte ein Fehlerhafter oder b\"{o}sartiger Code das Passwort eines beliebigen Users \"{u}berschreiben. Usernamen und ID sind ebenfalls Felder, auf die nur lesend zugegriffen werden soll.
-
-Umsetzung:
-Um das Model korrekt umzusetzen wurden zwei Konstruktoren implementiert. Ein Konstruktor nimmt einen Benutzernamen und Passwort entgegen
-
 \subsubsection{Postleitzahl Validierung}
 Die Postleitzahl wird mit der Hilfe von post.ch überprüft. Bevor abgefragt wird, ob die Postleitzahl existiert, wird der String in eine Zahl umgewandelt. Dies kann zu einer Exception führen und dann wird zurückgegeben, dass die eingegebene Postleitzahl keine gültige ist.\\
 Falls die Postleitzahl nicht existiert wird auf der Seite ``Keine PLZ gefunden'' wissen wir, dass die eingegebene Postleitzahl nicht existiert. Es wird hingegen nicht überprüft ob die eingegebene Postleitzahl mit der Stadt übereinstimmt.
 \lstinputlisting[caption=Überprüft Postleitzahl, style=JavaStyle]{checkzip.java}
-\subsubsection{SSL}
+
+\subsection{Schutz der Model-Klasse vor sch\"{a}dlichem Missbrauch}
+Die Schwierigkeit einer korrekten Login-implementation liegt darin, den Ablauf so zu gestalten dass nur dieser Ablauf zu einer validen Änderung führt. Heisst nur beim vorgesehenen Ablauf können nur korrekte Daten geschrieben werden, alles andere darf die Datenbank nicht verändern. So sind beispielsweise setters auf das Passwort problematisch. Zusammen mit der $.save()$ Methode könnte ein Fehlerhafter oder bösartiger Code das Passwort eines beliebigen Users überschreiben. Usernamen und ID sind ebenfalls Felder, auf die nur lesend zugegriffen werden soll. \\
+\\
+Um all dies zu verhindern, ist unsere Company Klasse Immutable.
+
+\section{SSL}
 Damit eine SSL-Verbindung hergestellt werden kann muss man im server.xml etwas aus dem Kommentar herausnehmen.\\
 \includegraphics[scale=.5]{ssl.png}\\
 Zusätzlich muss man mit dem keystore einen eigenen Schlüssel erstellen.
 Damit Login auch eine SSL Verbindung herstellen kann wird im web.xml ein Security Constraint eingebaut.\\
 \includegraphics[scale=.5]{web_xml.png}
-\section{Weitere M\"{o}gliche Massnahmen}
-
-\subsection{DOS-Attacke}
 
 
  \end{document}
